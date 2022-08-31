@@ -32,5 +32,10 @@ class NASAGalleryTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
+    
+    func testDecodeJson() throws {
+        let value = try JSONDecoder().decodeNASAGalaryData()
+        XCTAssertNotNil(value)
+    }
 
 }
