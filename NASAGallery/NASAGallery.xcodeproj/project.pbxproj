@@ -23,6 +23,9 @@
 		C0B272D728BF29EA00DD6D05 /* ImageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B272D628BF29EA00DD6D05 /* ImageGenerator.swift */; };
 		C0B272DA28BF481D00DD6D05 /* ImageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B272D928BF481D00DD6D05 /* ImageHelper.swift */; };
 		C0B272DC28BF505900DD6D05 /* StringToURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B272DB28BF505900DD6D05 /* StringToURL.swift */; };
+		C0B272E028BF718B00DD6D05 /* GalleryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B272DF28BF718B00DD6D05 /* GalleryCell.swift */; };
+		C0B272E328BF838C00DD6D05 /* ShadowForView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B272E228BF838C00DD6D05 /* ShadowForView.swift */; };
+		C0B272E528BF898E00DD6D05 /* detailedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B272E428BF898E00DD6D05 /* detailedViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +66,9 @@
 		C0B272D628BF29EA00DD6D05 /* ImageGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGenerator.swift; sourceTree = "<group>"; };
 		C0B272D928BF481D00DD6D05 /* ImageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageHelper.swift; sourceTree = "<group>"; };
 		C0B272DB28BF505900DD6D05 /* StringToURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringToURL.swift; sourceTree = "<group>"; };
+		C0B272DF28BF718B00DD6D05 /* GalleryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryCell.swift; sourceTree = "<group>"; };
+		C0B272E228BF838C00DD6D05 /* ShadowForView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowForView.swift; sourceTree = "<group>"; };
+		C0B272E428BF898E00DD6D05 /* detailedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = detailedViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +119,9 @@
 		C0B2729628BF13A900DD6D05 /* NASAGallery */ = {
 			isa = PBXGroup;
 			children = (
+				C0B272E128BF837900DD6D05 /* shadowForView */,
+				C0B272DE28BF717400DD6D05 /* collectionViewCell */,
+				C0B272DD28BF715700DD6D05 /* viewConctollers */,
 				C0B272D828BF480700DD6D05 /* ImageHelper */,
 				C0B272D528BF29D100DD6D05 /* UrlSessionHelper */,
 				C0B272CD28BF18D600DD6D05 /* JsonDecoder */,
@@ -120,7 +129,6 @@
 				C0B272C728BF14BD00DD6D05 /* ViewModel */,
 				C0B2729728BF13A900DD6D05 /* AppDelegate.swift */,
 				C0B2729928BF13A900DD6D05 /* SceneDelegate.swift */,
-				C0B2729B28BF13A900DD6D05 /* HomeViewController.swift */,
 				C0B2729D28BF13A900DD6D05 /* Main.storyboard */,
 				C0B272A028BF13AA00DD6D05 /* Assets.xcassets */,
 				C0B272A228BF13AA00DD6D05 /* LaunchScreen.storyboard */,
@@ -186,6 +194,31 @@
 				C0B272D928BF481D00DD6D05 /* ImageHelper.swift */,
 			);
 			path = ImageHelper;
+			sourceTree = "<group>";
+		};
+		C0B272DD28BF715700DD6D05 /* viewConctollers */ = {
+			isa = PBXGroup;
+			children = (
+				C0B2729B28BF13A900DD6D05 /* HomeViewController.swift */,
+				C0B272E428BF898E00DD6D05 /* detailedViewController.swift */,
+			);
+			path = viewConctollers;
+			sourceTree = "<group>";
+		};
+		C0B272DE28BF717400DD6D05 /* collectionViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				C0B272DF28BF718B00DD6D05 /* GalleryCell.swift */,
+			);
+			path = collectionViewCell;
+			sourceTree = "<group>";
+		};
+		C0B272E128BF837900DD6D05 /* shadowForView */ = {
+			isa = PBXGroup;
+			children = (
+				C0B272E228BF838C00DD6D05 /* ShadowForView.swift */,
+			);
+			path = shadowForView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -322,8 +355,11 @@
 			files = (
 				C0B272C928BF14E700DD6D05 /* GallareyModel.swift in Sources */,
 				C0B272D128BF1B2600DD6D05 /* HomeViewModel.swift in Sources */,
+				C0B272E328BF838C00DD6D05 /* ShadowForView.swift in Sources */,
+				C0B272E028BF718B00DD6D05 /* GalleryCell.swift in Sources */,
 				C0B2729C28BF13A900DD6D05 /* HomeViewController.swift in Sources */,
 				C0B272D728BF29EA00DD6D05 /* ImageGenerator.swift in Sources */,
+				C0B272E528BF898E00DD6D05 /* detailedViewController.swift in Sources */,
 				C0B2729828BF13A900DD6D05 /* AppDelegate.swift in Sources */,
 				C0B272DC28BF505900DD6D05 /* StringToURL.swift in Sources */,
 				C0B2729A28BF13A900DD6D05 /* SceneDelegate.swift in Sources */,

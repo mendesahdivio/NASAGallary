@@ -8,6 +8,11 @@
 import XCTest
 @testable import NASAGallery
 
+enum testUrl: String{
+    case normalUrl = "https://apod.nasa.gov/apod/image/1912/NGC6744_FinalLiuYuhang1024.jpg"
+    case fakeUrl = "https://test.com"
+}
+
 class NASAGalleryTests: XCTestCase {
 
     override func setUpWithError() throws {
@@ -35,7 +40,47 @@ class NASAGalleryTests: XCTestCase {
     
     func testDecodeJson() throws {
         let value = try JSONDecoder().decodeNASAGalaryData()
-        XCTAssertNotNil(value)
+        XCTAssertNoThrow(value)
+    }
+    
+    
+    func testConversionOfStringToURl() throws {
+        let val = testUrl.normalUrl.rawValue.returnURl()
+        XCTAssert(val != nil)
+        XCTAssert(UIApplication.shared.canOpenURL(val! as URL))
+    }
+    
+    func testImageDataGenerator() throws {
+        let ImageDataLoader = UrlImageDataLoader()
+        let val = testUrl.normalUrl.rawValue.returnURl()
+        let expect = expectation(description: "completed")
+        ImageDataLoader.startLoadingImage(url: val) {data in
+            if let data = data{
+                print(data as? Any)
+                if ((data as? Data) != nil) {
+                    expect.fulfill()
+                }
+            }
+        }
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    
+    func testThumbnailGeneration() throws {
+        let ImageDataLoader = UrlImageDataLoader()
+        let val = testUrl.normalUrl.rawValue.returnURl()
+        let expect = expectation(description: "completed")
+        ImageDataLoader.startLoadingImage(url: val) {data in
+            if let data = data{
+                print(data as? Any)
+                if let imgdata = data as? Data {
+                   let image = imgdata.makeThumbnail()
+                    XCTAssert(image != nil)
+                    expect.fulfill()
+                }
+            }
+        }
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
 }

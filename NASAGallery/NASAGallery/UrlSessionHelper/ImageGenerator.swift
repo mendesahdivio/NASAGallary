@@ -19,7 +19,7 @@ class  UrlImageDataLoader {
             completion(nil)
             return
         }
-        task = urlSession.dataTask(with: url) {[weak self] (response, data, error) in
+        task = urlSession.dataTask(with: url) {[weak self] (data, response, error) in
             if response == nil || data == nil {
                 self?.task?.cancel()
                 completion(error)

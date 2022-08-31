@@ -11,6 +11,7 @@ import UIKit
 protocol ModelInterface {
     func getThumbnails(fromCollection indexPath: IndexPath, completion: @escaping (UIImage) -> Void)
     func loadFullImage(fromCollection indexPath: IndexPath, completion: @escaping (UIImage) -> Void)
+    func returnCountOfImages() -> Int
 }
 
 
@@ -19,6 +20,7 @@ class HomeViewModel: ModelInterface {
  
     var nasaGalleryData = [GalleryModel]()
     var urlImageLoader: UrlImageDataLoader?
+    var cacheThumbnails = [IndexPath: UIImage]()
     
     init() {
         setModel()
@@ -34,14 +36,27 @@ class HomeViewModel: ModelInterface {
         }
     }
     
+    func returnCountOfImages() -> Int {
+        return nasaGalleryData.count
+    }
+    
     //MARK: returns thumbanils when requested in uicollectionview
     func getThumbnails(fromCollection indexPath: IndexPath, completion: @escaping (UIImage) -> Void) {
         let index = indexPath.item
         if index < nasaGalleryData.count {
-            let urlForThumbnail = nasaGalleryData[index].url?.returnURl()
-            urlImageLoader?.startLoadingImage(url: urlForThumbnail) { data in
-                if let  data = data, ((data as? Data) != nil) {
-                    
+            
+            if let cachedImage = cacheThumbnails[indexPath] {
+                completion(cachedImage)
+            } else {
+                let urlForThumbnail = nasaGalleryData[index].url?.returnURl()
+                urlImageLoader?.startLoadingImage(url: urlForThumbnail) {[weak self] data in
+                    guard let data = data as? Data else {
+                        //write code to handel other issues
+                        return
+                    }
+                    let image = data.makeThumbnail()
+                    self?.cacheThumbnails[indexPath] = image
+                    completion(image)
                 }
             }
         }
