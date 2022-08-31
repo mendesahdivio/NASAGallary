@@ -12,7 +12,7 @@ typealias collectionViewSource = UICollectionViewDataSource & UICollectionViewDe
 class HomeViewController: UIViewController {
     let collectionViewCellName = "collectionViewCell"
     // HomeViewModel Delegate
-    var modelDelegate: ModelInterface?
+    var modelDelegate: HomeViewModelInterface?
     // ------------
     
     @IBOutlet weak var collectionView: UICollectionView!
@@ -44,6 +44,11 @@ extension HomeViewController: collectionViewSource {
         return cell
     }
     
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        pushViewController(index: indexPath.item)
+    }
+    
     func collectionView(_ collectionView: UICollectionView,
                                      layout collectionViewLayout: UICollectionViewLayout,
                                      sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -54,7 +59,6 @@ extension HomeViewController: collectionViewSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-//        UIEdgeInsets.zero
         return UIEdgeInsets.zero
     }
 
@@ -78,6 +82,16 @@ extension HomeViewController {
     func setDelegateAndDataSource() {
         collectionView.dataSource = self
         collectionView.delegate  = self
+    }
+    
+    
+    func pushViewController(index: Int) {
+        guard let vc = self.storyboard?.instantiateViewController(withIdentifier: "DetailedViewController") as? DetailedViewController else {
+            return
+        }
+        vc.intialiseModel()
+        vc.fetchModelData(model: self.modelDelegate!.getModelData, index: index)
+        self.present(vc, animated: true, completion: nil)
     }
 }
 

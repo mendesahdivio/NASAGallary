@@ -6,3 +6,160 @@
 //
 
 import Foundation
+import UIKit
+
+class DetailedViewController: UIViewController, UIScrollViewDelegate {
+    
+    @IBOutlet weak var fullScreenImage: UIImageView!
+    @IBOutlet weak var textView: UITextView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    private var imageChangeObservation: NSKeyValueObservation?
+    
+    
+    
+    //Model Interface variable
+    private var detailedViewModel: DetailedViewModelInterface?
+   
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.showLoading(visbility: true)
+        self.loadSelectedImage()
+        self.setExplanation()
+        self.addObserverForImageView()
+        self.addGesturesForView()
+    }
+    
+    deinit {
+        imageChangeObservation = nil
+    }
+}
+
+
+
+//MARK: - Initialising model interface
+extension DetailedViewController {
+    
+    func intialiseModel() {
+        self.detailedViewModel = DetailedViewModel()
+    }
+    
+    func fetchModelData(model: [GalleryModel], index: Int) {
+        self.detailedViewModel?.NasaGalaryData = model
+        self.detailedViewModel?.indexOfObject = index
+    }
+    
+}
+
+
+//MARK: - setting data to DetailedViewController
+extension DetailedViewController {
+    private func setImageOnMainThread(image:UIImage) {
+         DispatchQueue.main.async {[weak self] in
+             self?.fullScreenImage.image = image
+         }
+     }
+     
+     private func setExplanation() {
+         DispatchQueue.main.async {[weak self] in
+             print(self?.detailedViewModel?.getImageExplanation())
+             self?.textView.text = self?.detailedViewModel?.getImageExplanation()
+         }
+        
+     }
+}
+
+
+
+
+//MARK: - Logic related to next, previous and current image loading
+extension DetailedViewController {
+    
+   private func loadSelectedImage() {
+        self.detailedViewModel?.loadFullImage {[weak self] image in
+            self?.setImageOnMainThread(image: image!)
+        }
+    }
+    
+    
+   private func fetchNext() {
+        self.showLoading(visbility: true)
+        self.setExplanation()
+        self.detailedViewModel?.fetchNextImage{[weak self] image in
+            self?.setImageOnMainThread(image: image!)
+        }
+    }
+    
+    
+   private func fetchPrevious() {
+        self.showLoading(visbility: true)
+        self.setExplanation()
+        self.detailedViewModel?.fetchPrevious{[weak self] image in
+            self?.setImageOnMainThread(image: image!)
+        }
+    }
+}
+
+
+//MARK: - IBAction functions
+extension DetailedViewController {
+    
+    @IBAction func dismissViewController() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+}
+
+
+extension DetailedViewController {
+    func addObserverForImageView() {
+        imageChangeObservation = fullScreenImage.observe(\.image, options: [.new]) { [weak self] (object, change) in
+            if object.image != nil {
+                self?.showLoading(visbility: false)
+            }
+        }
+    }
+    
+    func addGesturesForView() {
+        let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleLeftSwipe))
+        let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleRightSwipe))
+        
+        leftSwipe.direction = .left
+        rightSwipe.direction = .right
+
+        self.view.addGestureRecognizer(leftSwipe)
+        self.view.addGestureRecognizer(rightSwipe)
+    }
+    
+    
+    @objc func handleLeftSwipe() {
+        self.animateLeftSwipe()
+        self.fetchPrevious()
+    }
+    
+    @objc func handleRightSwipe() {
+        self.animateRightSwipe()
+        self.fetchNext()
+    }
+    
+    func showLoading(visbility: Bool) {
+        DispatchQueue.main.async {
+            if visbility {
+                self.activityIndicator.isHidden = false
+                self.activityIndicator.startAnimating()
+            } else {
+                self.activityIndicator.stopAnimating()
+                self.activityIndicator.isHidden = true
+            }
+        }
+    }
+    
+    func animateLeftSwipe() {
+        self.fullScreenImage.fadeIn()
+        self.fullScreenImage.image = nil
+    }
+    
+    func animateRightSwipe() {
+        self.fullScreenImage.fadeIn()
+        self.fullScreenImage.image = nil
+    }
+}

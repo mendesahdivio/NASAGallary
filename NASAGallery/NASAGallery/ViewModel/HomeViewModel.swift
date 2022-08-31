@@ -8,16 +8,15 @@
 import Foundation
 import UIKit
 
-protocol ModelInterface {
+protocol HomeViewModelInterface {
     func getThumbnails(fromCollection indexPath: IndexPath, completion: @escaping (UIImage) -> Void)
-    func loadFullImage(fromCollection indexPath: IndexPath, completion: @escaping (UIImage) -> Void)
     func returnCountOfImages() -> Int
+    var getModelData: [GalleryModel] {get}
 }
 
 
 
-class HomeViewModel: ModelInterface {
- 
+class HomeViewModel: HomeViewModelInterface {
     var nasaGalleryData = [GalleryModel]()
     var urlImageLoader: UrlImageDataLoader?
     var cacheThumbnails = [IndexPath: UIImage]()
@@ -26,6 +25,13 @@ class HomeViewModel: ModelInterface {
         setModel()
         urlImageLoader = UrlImageDataLoader()
     }
+    
+    var getModelData: [GalleryModel] {
+        get {
+            return nasaGalleryData
+        }
+    }
+    
     
     func setModel() {
         do {
@@ -60,10 +66,5 @@ class HomeViewModel: ModelInterface {
                 }
             }
         }
-    }
-    
-    //MARK: returns full Sized Image on selection of the image
-    func loadFullImage(fromCollection indexPath: IndexPath, completion: @escaping (UIImage) -> Void) {
-        
     }
 }
