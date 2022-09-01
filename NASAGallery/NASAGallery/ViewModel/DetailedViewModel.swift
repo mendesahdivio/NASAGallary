@@ -9,9 +9,10 @@ import Foundation
 import UIKit
 
 protocol DetailedViewModelInterface {
-    func loadFullImage(completion: @escaping (UIImage?) -> Void)
-    func fetchNextImage(completion: @escaping (UIImage?) -> Void)
-    func fetchPrevious(completion: @escaping (UIImage?) -> Void)
+    func loadFullImage(completion: @escaping (UIImage?, Error?) -> Void)
+    func fetchNextImage(completion: @escaping (UIImage?, Error?) -> Void)
+    func fetchPrevious(completion: @escaping (UIImage?, Error?) -> Void)
+    func isLastImage() -> Bool
     func getImageExplanation() -> String
     func getImageTitle() -> String
     func getDate() -> String
@@ -29,6 +30,7 @@ class DetailedViewModel: DetailedViewModelInterface {
     private var urlImageLoader: UrlImageDataLoader?
     private var nasaGalleryData = [GalleryModel]()
     private var cachedData = [Int: UIImage]()
+    private var cache: NSCache<NSNumber, UIImage> = NSCache<NSNumber, UIImage>()
     private var metaData: MetaDataModel?
     
     
@@ -53,35 +55,39 @@ class DetailedViewModel: DetailedViewModelInterface {
     
     init() {
         urlImageLoader = UrlImageDataLoader()
+        cache.totalCostLimit = 50_000_000
     }
     
    
     //MARK: returns full Sized Image on selection of the image
-    func loadFullImage( completion: @escaping (UIImage?) -> Void) {
+    func loadFullImage( completion: @escaping (UIImage?, Error?) -> Void) {
         if isIndexWithinBounds() {
-            if let cachedImage = cachedData[index] {
-                completion(cachedImage)
+            let indexNumer = NSNumber(value: index)
+            if let cachedImage = cache.object(forKey: indexNumer) {
+                completion(cachedImage, nil)
             } else {
                 let urlForThumbnail = nasaGalleryData[index].hdurl?.returnURl()
                 urlImageLoader?.startLoadingImage(url: urlForThumbnail, taskType: .FullImage) {[weak self] data in
                     guard let data = data as? Data else {
                         //write code to handel other issues
+                        if let error = data as? Error {
+                            completion(nil, error)
+                        }
                         return
                     }
                     guard let image = UIImage(data: data) else{
-                        completion(nil)
+                        completion(nil, nil)
                         return
                     }
-                    let index = self?.index
-                    self?.cachedData[index!] = image
-                    completion(image)
+                    self?.cache.setObject(image, forKey: indexNumer)
+                    completion(image, nil)
                 }
             }
         }
     }
     
     
-    func fetchNextImage(completion: @escaping (UIImage?) -> Void) {
+    func fetchNextImage(completion: @escaping (UIImage?, Error?) -> Void) {
         let count = nasaGalleryData.count
         let currentIndex = index
         if currentIndex + 1 < count {
@@ -91,12 +97,21 @@ class DetailedViewModel: DetailedViewModelInterface {
     }
     
     
-    func fetchPrevious(completion: @escaping (UIImage?) -> Void) {
+    func fetchPrevious(completion: @escaping (UIImage?, Error?) -> Void) {
         let currentIndex = index
-        if currentIndex - 1 > 0 {
+        if currentIndex - 1 >= 0 {
             index = currentIndex - 1
             self.loadFullImage(completion: completion)
         }
+    }
+    
+    
+    func isLastImage() -> Bool {
+        if index == 0 || index == nasaGalleryData.count - 1{
+            return true
+        }
+        
+        return false
     }
     
     

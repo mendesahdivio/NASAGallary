@@ -20,6 +20,7 @@ class  UrlImageDataLoader {
    
     
     func startLoadingImage(url: URL?, taskType: TaskType = .Thumbnail, completion:@escaping (Any?) ->  Void) {
+        setSessionTImeOut()
         guard  let url = url else {
             completion(nil)
             return
@@ -39,6 +40,13 @@ class  UrlImageDataLoader {
             }
         }
         task?.resume()
+    }
+    
+    func setSessionTImeOut() {
+        let sessionConfig = URLSessionConfiguration.default
+        sessionConfig.timeoutIntervalForRequest = 10.0
+        sessionConfig.timeoutIntervalForResource = 10.0
+        urlSession = URLSession(configuration: sessionConfig)
     }
 }
 

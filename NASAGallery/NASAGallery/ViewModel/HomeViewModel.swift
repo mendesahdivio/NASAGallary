@@ -19,7 +19,7 @@ protocol HomeViewModelInterface {
 class HomeViewModel: HomeViewModelInterface {
     var nasaGalleryData = [GalleryModel]()
     var urlImageLoader: UrlImageDataLoader?
-    var cacheThumbnails = [IndexPath: UIImage]()
+    var cache = NSCache<NSNumber, UIImage>()
     
     init() {
         setModel()
@@ -50,8 +50,8 @@ class HomeViewModel: HomeViewModelInterface {
     func getThumbnails(fromCollection indexPath: IndexPath, completion: @escaping (UIImage) -> Void) {
         let index = indexPath.item
         if index < nasaGalleryData.count {
-            
-            if let cachedImage = cacheThumbnails[indexPath] {
+            let numberIndex = NSNumber(value: index)
+            if let cachedImage = cache.object(forKey: numberIndex) {
                 completion(cachedImage)
             } else {
                 let urlForThumbnail = nasaGalleryData[index].url?.returnURl()
@@ -61,7 +61,7 @@ class HomeViewModel: HomeViewModelInterface {
                         return
                     }
                     let image = data.makeThumbnail()
-                    self?.cacheThumbnails[indexPath] = image
+                    self?.cache.setObject(image, forKey: numberIndex)
                     completion(image)
                 }
             }

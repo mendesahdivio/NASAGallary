@@ -8,12 +8,18 @@
 import Foundation
 import UIKit
 
+enum ConstantMessages: String {
+    case nilImageButNoError = "Please try again in some time"
+    case withError = "Please try again in some time.. we have encounterde : "
+}
+
 class DetailedViewController: UIViewController, UIScrollViewDelegate {
     
     @IBOutlet weak var fullScreenImage: UIImageView!
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     private var imageChangeObservation: NSKeyValueObservation?
+    private var errorTask: DispatchWorkItem?
     
     
     
@@ -61,7 +67,6 @@ extension DetailedViewController {
      
      private func setExplanation() {
          DispatchQueue.main.async {[weak self] in
-             print(self?.detailedViewModel?.getImageExplanation())
              self?.textView.text = self?.detailedViewModel?.getImageExplanation()
          }
         
@@ -75,28 +80,79 @@ extension DetailedViewController {
 extension DetailedViewController {
     
    private func loadSelectedImage() {
-        self.detailedViewModel?.loadFullImage {[weak self] image in
-            self?.setImageOnMainThread(image: image!)
+        self.detailedViewModel?.loadFullImage {[weak self] image, error in
+            self?.dataCheker(image: image, error: error)
         }
     }
     
     
    private func fetchNext() {
-        self.showLoading(visbility: true)
-        self.setExplanation()
-        self.detailedViewModel?.fetchNextImage{[weak self] image in
-            self?.setImageOnMainThread(image: image!)
+        self.checkIfLastImageForLayout()
+       
+        self.detailedViewModel?.fetchNextImage{[weak self] image, error in
+            self?.dataCheker(image: image, error: error)
         }
     }
     
     
    private func fetchPrevious() {
-        self.showLoading(visbility: true)
-        self.setExplanation()
-        self.detailedViewModel?.fetchPrevious{[weak self] image in
-            self?.setImageOnMainThread(image: image!)
+        self.checkIfLastImageForLayout()
+       
+        self.detailedViewModel?.fetchPrevious{[weak self] image, error in
+            self?.dataCheker(image: image, error: error)
         }
     }
+    
+    
+    func checkIfLastImageForLayout() {
+        if self.detailedViewModel!.isLastImage() != true {
+            self.showLoading(visbility: true)
+            DispatchQueue.main.async {[weak self] in
+                self?.fullScreenImage.image = nil
+            }
+        }
+        self.setExplanation()
+    }
+    
+    
+    func dataCheker(image: UIImage?, error: Error?) {
+        if error != nil && image == nil {
+            errorTask?.cancel()
+            if error?.localizedDescription != "cancelled" {
+                showErrorAlert(with: true, errorDetails: error!.localizedDescription)
+            }
+        } else if image == nil && error == nil  {
+            errorTask?.cancel()
+            showErrorAlert(with: false)
+        } else {
+            self.setImageOnMainThread(image: image!)
+        }
+    }
+    
+    
+    private func showErrorAlert(with error: Bool, errorDetails: String = "") {
+        
+        if error {
+            errorTask = DispatchWorkItem {
+                self.presentAlert(ConstantMessages.withError.rawValue + "\(errorDetails)") {[weak self] action in
+                    self?.loadSelectedImage()
+                }
+            }
+            
+        } else {
+            errorTask = DispatchWorkItem {
+                self.presentAlert(ConstantMessages.nilImageButNoError.rawValue) {[weak self] action in
+                    self?.loadSelectedImage()
+                }
+            }
+        }
+        
+        DispatchQueue.global(qos: .background).async(execute: errorTask!)
+        
+    }
+    
+    
+   
 }
 
 
@@ -133,12 +189,13 @@ extension DetailedViewController {
     
     @objc func handleLeftSwipe() {
         self.animateLeftSwipe()
-        self.fetchPrevious()
+        self.fetchNext()
+        
     }
     
     @objc func handleRightSwipe() {
         self.animateRightSwipe()
-        self.fetchNext()
+        self.fetchPrevious()
     }
     
     func showLoading(visbility: Bool) {
@@ -155,11 +212,9 @@ extension DetailedViewController {
     
     func animateLeftSwipe() {
         self.fullScreenImage.fadeIn()
-        self.fullScreenImage.image = nil
     }
     
     func animateRightSwipe() {
         self.fullScreenImage.fadeIn()
-        self.fullScreenImage.image = nil
     }
 }

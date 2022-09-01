@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C02E787628C113D0001F5FAE /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C02E787528C113D0001F5FAE /* AlertViewController.swift */; };
 		C0B2729828BF13A900DD6D05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B2729728BF13A900DD6D05 /* AppDelegate.swift */; };
 		C0B2729A28BF13A900DD6D05 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B2729928BF13A900DD6D05 /* SceneDelegate.swift */; };
 		C0B2729C28BF13A900DD6D05 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B2729B28BF13A900DD6D05 /* HomeViewController.swift */; };
@@ -50,6 +51,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C02E787528C113D0001F5FAE /* AlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
 		C0B2729428BF13A900DD6D05 /* NASAGallery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NASAGallery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0B2729728BF13A900DD6D05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C0B2729928BF13A900DD6D05 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 			children = (
 				C0B2729B28BF13A900DD6D05 /* HomeViewController.swift */,
 				C0B272E428BF898E00DD6D05 /* detailedViewController.swift */,
+				C02E787528C113D0001F5FAE /* AlertViewController.swift */,
 			);
 			path = viewConctollers;
 			sourceTree = "<group>";
@@ -381,6 +384,7 @@
 				C0B272E728BF90B300DD6D05 /* DetailedViewModel.swift in Sources */,
 				C0B2729C28BF13A900DD6D05 /* HomeViewController.swift in Sources */,
 				C0B272D728BF29EA00DD6D05 /* ImageGenerator.swift in Sources */,
+				C02E787628C113D0001F5FAE /* AlertViewController.swift in Sources */,
 				C0B272E528BF898E00DD6D05 /* detailedViewController.swift in Sources */,
 				C0B272EE28BFEAAE00DD6D05 /* UIViewAnimation.swift in Sources */,
 				C0B272E928BFA76400DD6D05 /* CommonCodeViewController.swift in Sources */,
