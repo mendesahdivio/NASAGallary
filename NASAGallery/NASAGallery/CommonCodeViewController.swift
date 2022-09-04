@@ -8,16 +8,10 @@
 import Foundation
 import UIKit
 
-extension UINavigationController {
-    func instiateViewController(vc: UIViewController) {
-        self.pushViewController(vc, animated: true)
-    }
-}
-
-
+//MARK: storyborad instantiation for view controller file
 extension UIStoryboard {
     func instiateVC(viewcControllerID: String) -> UIViewController {
-        let vc = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: viewcControllerID)
+        let vc = UIStoryboard.init(name: storyBoardName, bundle: Bundle.main).instantiateViewController(withIdentifier: viewcControllerID)
         return vc
     }
 }

@@ -25,7 +25,7 @@
 		C0B272DC28BF505900DD6D05 /* StringToURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B272DB28BF505900DD6D05 /* StringToURL.swift */; };
 		C0B272E028BF718B00DD6D05 /* GalleryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B272DF28BF718B00DD6D05 /* GalleryCell.swift */; };
 		C0B272E328BF838C00DD6D05 /* ShadowForView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B272E228BF838C00DD6D05 /* ShadowForView.swift */; };
-		C0B272E528BF898E00DD6D05 /* detailedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B272E428BF898E00DD6D05 /* detailedViewController.swift */; };
+		C0B272E528BF898E00DD6D05 /* DetailedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B272E428BF898E00DD6D05 /* DetailedViewController.swift */; };
 		C0B272E728BF90B300DD6D05 /* DetailedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B272E628BF90B300DD6D05 /* DetailedViewModel.swift */; };
 		C0B272E928BFA76400DD6D05 /* CommonCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B272E828BFA76400DD6D05 /* CommonCodeViewController.swift */; };
 		C0B272EE28BFEAAE00DD6D05 /* UIViewAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B272ED28BFEAAE00DD6D05 /* UIViewAnimation.swift */; };
@@ -34,6 +34,7 @@
 		C0E5B0A728C4BD7B00BD7185 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = C0E5B0A628C4BD7B00BD7185 /* Nuke */; };
 		C0E5B0AA28C4BDC200BD7185 /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = C0E5B0A928C4BDC200BD7185 /* NukeExtensions */; };
 		C0E5B0AC28C4BDC200BD7185 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = C0E5B0AB28C4BDC200BD7185 /* NukeUI */; };
+		C0E5B0AF28C4EB2A00BD7185 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0E5B0AE28C4EB2A00BD7185 /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,12 +77,13 @@
 		C0B272DB28BF505900DD6D05 /* StringToURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringToURL.swift; sourceTree = "<group>"; };
 		C0B272DF28BF718B00DD6D05 /* GalleryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryCell.swift; sourceTree = "<group>"; };
 		C0B272E228BF838C00DD6D05 /* ShadowForView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowForView.swift; sourceTree = "<group>"; };
-		C0B272E428BF898E00DD6D05 /* detailedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = detailedViewController.swift; sourceTree = "<group>"; };
+		C0B272E428BF898E00DD6D05 /* DetailedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedViewController.swift; sourceTree = "<group>"; };
 		C0B272E628BF90B300DD6D05 /* DetailedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedViewModel.swift; sourceTree = "<group>"; };
 		C0B272E828BFA76400DD6D05 /* CommonCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonCodeViewController.swift; sourceTree = "<group>"; };
 		C0B272ED28BFEAAE00DD6D05 /* UIViewAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewAnimation.swift; sourceTree = "<group>"; };
 		C0B801C328C35AB0009637E3 /* GifGeneration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifGeneration.swift; sourceTree = "<group>"; };
 		C0B801C728C35E37009637E3 /* 2QrM.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = 2QrM.gif; sourceTree = "<group>"; };
+		C0E5B0AE28C4EB2A00BD7185 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +137,7 @@
 		C0B2729628BF13A900DD6D05 /* NASAGallery */ = {
 			isa = PBXGroup;
 			children = (
+				C0E5B0AD28C4EB1800BD7185 /* Constants */,
 				C0B801C228C35A98009637E3 /* GifGenerationLib */,
 				C0B272EC28BFEA9B00DD6D05 /* UiViewAnimation */,
 				C0B272E128BF837900DD6D05 /* shadowForView */,
@@ -212,7 +215,7 @@
 			isa = PBXGroup;
 			children = (
 				C0B2729B28BF13A900DD6D05 /* HomeViewController.swift */,
-				C0B272E428BF898E00DD6D05 /* detailedViewController.swift */,
+				C0B272E428BF898E00DD6D05 /* DetailedViewController.swift */,
 				C02E787528C113D0001F5FAE /* AlertViewController.swift */,
 			);
 			path = viewConctollers;
@@ -248,6 +251,14 @@
 				C0B801C328C35AB0009637E3 /* GifGeneration.swift */,
 			);
 			path = GifGenerationLib;
+			sourceTree = "<group>";
+		};
+		C0E5B0AD28C4EB1800BD7185 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				C0E5B0AE28C4EB2A00BD7185 /* Constants.swift */,
+			);
+			path = Constants;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -396,6 +407,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C0B272C928BF14E700DD6D05 /* GallareyModel.swift in Sources */,
+				C0E5B0AF28C4EB2A00BD7185 /* Constants.swift in Sources */,
 				C0B272D128BF1B2600DD6D05 /* HomeViewModel.swift in Sources */,
 				C0B272E328BF838C00DD6D05 /* ShadowForView.swift in Sources */,
 				C0B272E028BF718B00DD6D05 /* GalleryCell.swift in Sources */,
@@ -404,7 +416,7 @@
 				C0B2729C28BF13A900DD6D05 /* HomeViewController.swift in Sources */,
 				C0B272D728BF29EA00DD6D05 /* NukeImageLoader.swift in Sources */,
 				C02E787628C113D0001F5FAE /* AlertViewController.swift in Sources */,
-				C0B272E528BF898E00DD6D05 /* detailedViewController.swift in Sources */,
+				C0B272E528BF898E00DD6D05 /* DetailedViewController.swift in Sources */,
 				C0B272EE28BFEAAE00DD6D05 /* UIViewAnimation.swift in Sources */,
 				C0B272E928BFA76400DD6D05 /* CommonCodeViewController.swift in Sources */,
 				C0B2729828BF13A900DD6D05 /* AppDelegate.swift in Sources */,

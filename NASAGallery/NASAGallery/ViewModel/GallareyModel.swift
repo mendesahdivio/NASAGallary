@@ -6,6 +6,8 @@
 //
 
 import Foundation
+
+//MARK: - Gallery Model for holding json data
 struct GalleryModel: Decodable, Identifiable {
     
     var id =  UUID()

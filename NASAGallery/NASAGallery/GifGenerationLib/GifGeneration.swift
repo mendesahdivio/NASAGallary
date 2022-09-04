@@ -5,6 +5,7 @@
 //  Created by ahdivio mendes on 03/09/22.
 //
 
+//MARK: - This class extension of UiIMage generates a gif as a UIImage
 import Foundation
 
 import UIKit

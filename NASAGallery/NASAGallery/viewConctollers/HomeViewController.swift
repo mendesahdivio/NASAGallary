@@ -6,13 +6,13 @@
 //
 
 import UIKit
-typealias collectionViewSource = UICollectionViewDataSource & UICollectionViewDelegate & UICollectionViewDelegateFlowLayout
+
 
 class HomeViewController: UIViewController {
-    let collectionViewCellName = "collectionViewCell"
-    // HomeViewModel Delegate
+   
+    //MARK: HomeViewModel Delegate
     var modelDelegate: HomeViewModelInterface?
-    // ------------
+   
     
     @IBOutlet weak var collectionView: UICollectionView!
 
@@ -24,6 +24,11 @@ class HomeViewController: UIViewController {
     }
 }
 
+
+
+
+
+//MARK: collection View data Source and Delegate
 extension HomeViewController: collectionViewSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -38,13 +43,7 @@ extension HomeViewController: collectionViewSource {
         return cell
     }
     
-    func generateCGFSize() -> CGFloat{
-        let size = CGSize(width: 128.0, height: 128.0)
-        let CGF = size.height * size.width
-        return CGF
-    }
-    
-    
+  
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         pushViewController(index: indexPath.item)
     }
@@ -73,20 +72,25 @@ extension HomeViewController: collectionViewSource {
 
 
 
+
+//MARK: Logic to initlaise Model
 extension HomeViewController {
     
+    //MARK: initialise modal
     func initaliseModel() {
         self.modelDelegate = HomeViewModel()
     }
     
+    //MARK: sets collectionView delegate and data source to viewcontroller
     func setDelegateAndDataSource() {
         collectionView.dataSource = self
         collectionView.delegate  = self
     }
     
     
+    //MARK: instantiates DetailedViewController and sets Modal
     func pushViewController(index: Int) {
-        guard let vc = self.storyboard?.instantiateViewController(withIdentifier: "DetailedViewController") as? DetailedViewController else {
+        guard let vc = self.storyboard?.instantiateViewController(withIdentifier: DetailedViewControllerID) as? DetailedViewController else {
             return
         }
         vc.intialiseModel()
@@ -96,10 +100,3 @@ extension HomeViewController {
 }
 
 
-extension CGFloat {
-    func generateCGFSize() -> CGFloat{
-        let size = CGSize(width: 128.0, height: 128.0)
-        let CGF = size.height * size.width
-        return CGF
-    }
-}

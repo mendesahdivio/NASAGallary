@@ -8,11 +8,7 @@
 import XCTest
 @testable import NASAGallery
 
-enum testUrl: String{
-    case normalUrl = "https://apod.nasa.gov/apod/image/1912/NGC6744_FinalLiuYuhang1024.jpg"
-    case secondNonfake = "https://apod.nasa.gov/apod/image/1912/M27_Mazlin_2000.jpg"
-    case fakeUrl = "https://test.com"
-}
+
 
 class NASAGalleryTests: XCTestCase {
     let homViewModel = HomeViewModel()
@@ -59,7 +55,7 @@ class NASAGalleryTests: XCTestCase {
     
     //size for cell remains constant in the current code
     func testloadImageCell() throws {
-        let cellSize = CGFloat().generateCGFSize()
+        let cellSize = generateCGFSize()
         XCTAssertNotNil(cellSize, "cell size")
         XCTAssert(cellSize == cellSizeConstant)
     }
@@ -99,7 +95,7 @@ extension NASAGalleryTests {
     }
     
     func testImageHolder() throws {
-        XCTAssertNotNil(nukeImageManager.makeErrorAndHolderImage(name: "failerImageSet"))
+        XCTAssertNotNil(nukeImageManager.makeErrorAndHolderImage(name: failureImageName))
     }
     
     func testNegativeImageHolder() throws {
@@ -133,7 +129,7 @@ extension NASAGalleryTests {
 }
 
 
-//Detailed view model test
+//MARK: Detailed view model test
 extension NASAGalleryTests {
     func testFetchNext() {
         

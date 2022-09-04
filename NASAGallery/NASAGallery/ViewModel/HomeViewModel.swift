@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-
+//MARK: - HomeViewModelInterface
 protocol HomeViewModelInterface {
     func getThumbanilUsingNuke(formCollection indexPath: IndexPath, ImageView: UIImageView?, cellSize: CGFloat)
     func returnCountOfImages() -> Int
@@ -27,13 +27,15 @@ class HomeViewModel: HomeViewModelInterface {
         nukeImageLoader = NukeImageLoader()
     }
     
+    //MARK: returns the gallery model data stored
     var getModelData: [GalleryModel] {
         get {
             return nasaGalleryData
         }
     }
     
-    
+
+    //MARK: decodes json Data and sets the model data to local modal data variable
     func setModel() {
         do {
             let gallery = try JSONDecoder().decodeNASAGalaryData()
@@ -43,10 +45,12 @@ class HomeViewModel: HomeViewModelInterface {
         }
     }
     
+    //MARK: returns count of model data
     func returnCountOfImages() -> Int {
         return nasaGalleryData.count
     }
         
+    //MARK: Gets thumbnails for collectionView in HomeViewController for Gallery Cells
     func getThumbanilUsingNuke(formCollection indexPath: IndexPath, ImageView cellImageView: UIImageView?, cellSize: CGFloat)   {
         let index = indexPath.item
         if index < nasaGalleryData.count {

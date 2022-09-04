@@ -8,9 +8,9 @@
 import Foundation
 
 
-
+//MARK: Class extension of JsonDecoder Decodes Json as array of GalleryModel
 extension JSONDecoder {
-    func decodeNASAGalaryData(resourceName: String = "NASAJsonFile", fileExtension: String = "json") throws -> [GalleryModel]? {
+    func decodeNASAGalaryData(resourceName: String = jsonFileName, fileExtension: String = "json") throws -> [GalleryModel]? {
         guard let url = Bundle.main.url(forResource: resourceName, withExtension: fileExtension), let data = try? Data(contentsOf: url) else {
             return nil
         }

@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+//MARK: - DetailedViewModelInterface
 protocol DetailedViewModelInterface {
     func fetchNextImage(completion: @escaping (Error?) -> Void)
     func fetchPrevious(completion: @escaping (Error?) -> Void)
@@ -24,13 +25,19 @@ protocol DetailedViewModelInterface {
 
 class DetailedViewModel: DetailedViewModelInterface {
     
+    //MARK: stores index of object selecte
     private var index: Int = 0
+    
     private var nukeImageLoader: NukeImageLoader?
+    
     private var nasaGalleryData = [GalleryModel]()
+    
     fileprivate var imageView: UIImageView?
+    
+    //MARK: stores image cache
     private var cache: NSCache<NSNumber, UIImage> = NSCache<NSNumber, UIImage>()
    
-    //Used for UnitTest Only has dependency
+    //MARK: Used for UnitTest Only has dependency
     var testImageView: UIImageView {
         get {
             return imageView ?? UIImageView()
@@ -65,6 +72,7 @@ class DetailedViewModel: DetailedViewModelInterface {
         cache.totalCostLimit = 50_000_000
     }
     
+    //MARK: fetches next gallery image
     func fetchNextImage(completion: @escaping (Error?) -> Void) {
         let count = nasaGalleryData.count
         let currentIndex = index
@@ -74,7 +82,7 @@ class DetailedViewModel: DetailedViewModelInterface {
         }
     }
     
-    
+    //MARK: fetches previous gallery image
     func fetchPrevious(completion: @escaping (Error?) -> Void) {
         let currentIndex = index
         if currentIndex - 1 >= 0 {
@@ -83,7 +91,7 @@ class DetailedViewModel: DetailedViewModelInterface {
         }
     }
     
-    
+    //MARK: checks if last image in model data array and returns flag for the same
     func isLastImage() -> Bool {
         if index == 0 || index == nasaGalleryData.count - 1{
             return true
@@ -92,7 +100,7 @@ class DetailedViewModel: DetailedViewModelInterface {
         return false
     }
     
-    
+    //MARK: gets model explanation for image
     func getImageExplanation() -> String {
         if isIndexWithinBounds() {
             return nasaGalleryData[index].explanation ?? ""
@@ -101,6 +109,7 @@ class DetailedViewModel: DetailedViewModelInterface {
         return ""
     }
     
+    //MARK: gets Title for image
     func getImageTitle() -> String {
         if index < nasaGalleryData.count {
             return nasaGalleryData[index].title ?? ""
@@ -109,7 +118,7 @@ class DetailedViewModel: DetailedViewModelInterface {
         return ""
     }
     
-    
+    //MARK: gets Date for image
     func getDate() -> String {
         if isIndexWithinBounds() {
             return nasaGalleryData[index].date ?? ""
@@ -118,7 +127,7 @@ class DetailedViewModel: DetailedViewModelInterface {
         return ""
     }
     
-    
+    //MARK: gets getCopyRight for image
     func getCopyRight() -> String {
         if isIndexWithinBounds() {
             return nasaGalleryData[index].copyright ?? ""
@@ -126,7 +135,7 @@ class DetailedViewModel: DetailedViewModelInterface {
         return ""
     }
     
-    
+    //MARK: gets HdUrl for image
     func getHdUrl() -> String {
         if isIndexWithinBounds() {
             return nasaGalleryData[index].hdurl ?? ""
@@ -134,6 +143,7 @@ class DetailedViewModel: DetailedViewModelInterface {
         return ""
     }
     
+    //MARK: gets Url for image
     func getUrl() -> String {
         if isIndexWithinBounds() {
             return nasaGalleryData[index].url ?? ""
@@ -141,8 +151,7 @@ class DetailedViewModel: DetailedViewModelInterface {
         return ""
     }
     
-    
-    
+   //MARK: checks if class index value is within bounds of model data array
    func isIndexWithinBounds() -> Bool {
         if index < nasaGalleryData.count {
             return true
@@ -152,9 +161,10 @@ class DetailedViewModel: DetailedViewModelInterface {
     
 }
 
-//Using Nuke
+//MARK: - this extension defines a func to load full image by querring nukeImageLoader for full image and returns error if occured
 extension DetailedViewModel {
     
+    //MARK: func to load full image by querring nukeImageLoader for full image and returns error if occured
     func loadFullImage(imageView: UIImageView, completion: @escaping (Error?) -> Void) {
         self.imageView = imageView
         if isIndexWithinBounds() {
@@ -179,12 +189,14 @@ extension DetailedViewModel {
 }
 
 
-
+//MARK: - this extension defines a func to generate a string from all metadata
 extension DetailedViewModel {
+    
+    //MARK: a func to generate a string from all metadata
     func makeTextForTextView(title:String = "") -> String {
-       
         let text:String = "\(title) \(getImageTitle())\n\nCOPY RIGHT:  \(getCopyRight())\n\nURL:  \(getHdUrl())\n\nHDURL:  \(getHdUrl())\n\nDATE: \(getDate())\n\nINFO: \(getImageExplanation())"
         return text
     }
+    
 }
 

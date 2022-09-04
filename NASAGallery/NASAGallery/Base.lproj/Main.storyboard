@@ -137,10 +137,6 @@
                                     </navigationItem>
                                 </items>
                             </navigationBar>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="qjL-6X-QPb">
-                                <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
-                                <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </activityIndicatorView>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="always" indicatorStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="Ooh-tk-Hpl">
                                 <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                                 <subviews>
@@ -206,19 +202,16 @@
                             <constraint firstItem="0L7-6R-J2g" firstAttribute="top" relation="lessThanOrEqual" secondItem="nYf-yX-qHY" secondAttribute="bottom" constant="800" id="Dno-b5-JGJ"/>
                             <constraint firstItem="taj-hl-Y77" firstAttribute="bottom" secondItem="Ooh-tk-Hpl" secondAttribute="bottom" id="HyQ-0T-Vmm"/>
                             <constraint firstItem="taj-hl-Y77" firstAttribute="bottom" secondItem="0L7-6R-J2g" secondAttribute="bottom" id="Klo-rg-bTP"/>
-                            <constraint firstItem="qjL-6X-QPb" firstAttribute="centerX" secondItem="ONm-4S-mJB" secondAttribute="centerX" id="PSb-Dt-P2k"/>
                             <constraint firstItem="Ooh-tk-Hpl" firstAttribute="trailing" secondItem="taj-hl-Y77" secondAttribute="trailing" id="SLW-8G-nIf"/>
                             <constraint firstItem="Ooh-tk-Hpl" firstAttribute="top" secondItem="nYf-yX-qHY" secondAttribute="bottom" id="V8x-dc-dxs"/>
                             <constraint firstItem="nYf-yX-qHY" firstAttribute="leading" secondItem="taj-hl-Y77" secondAttribute="leading" id="WuV-lF-w5M"/>
                             <constraint firstItem="nYf-yX-qHY" firstAttribute="trailing" secondItem="taj-hl-Y77" secondAttribute="trailing" id="awA-xS-aJt"/>
-                            <constraint firstItem="qjL-6X-QPb" firstAttribute="centerY" secondItem="ONm-4S-mJB" secondAttribute="centerY" id="azF-lV-diu"/>
                             <constraint firstItem="Ooh-tk-Hpl" firstAttribute="leading" secondItem="taj-hl-Y77" secondAttribute="leading" id="dtS-T7-cUy"/>
                             <constraint firstItem="nYf-yX-qHY" firstAttribute="top" secondItem="taj-hl-Y77" secondAttribute="top" id="jlH-C9-CUD"/>
                             <constraint firstItem="taj-hl-Y77" firstAttribute="trailing" secondItem="0L7-6R-J2g" secondAttribute="trailing" id="wfA-1c-tTZ"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="activityIndicator" destination="qjL-6X-QPb" id="LRr-Kd-rej"/>
                         <outlet property="changeTextViewHolderBtn" destination="fA7-gj-Gbu" id="1x8-hh-RW9"/>
                         <outlet property="fullScreenImage" destination="9ZI-Z9-KfU" id="Wt8-xA-lzs"/>
                         <outlet property="metaDataTextField" destination="tbO-cW-1fp" id="VLL-Jp-f7C"/>

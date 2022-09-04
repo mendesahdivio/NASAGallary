@@ -8,7 +8,10 @@
 import Foundation
 import UIKit
 
+//MARK: -  this Class extension of UIView adds shadow to view and makes corner round of any UIView
 extension UIView {
+    
+    //MARK: Adds Shadow to UIView
     func dropShadow(color: UIColor, opacity: Float = 0.5, offSet: CGSize, radius: CGFloat = 1, scale: Bool = true) {
       layer.masksToBounds = false
       layer.shadowColor = color.cgColor
@@ -20,7 +23,7 @@ extension UIView {
       layer.rasterizationScale = scale ? UIScreen.main.scale : 1
     }
     
-    
+    //MARK: makes round edges of UIView
     func makeViewCornersRounder(){
         self.layer.cornerRadius = 15;
         self.layer.masksToBounds = true;

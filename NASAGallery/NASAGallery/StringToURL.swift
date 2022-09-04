@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+//MARK: converts string to URl
 extension String {
     func returnURl() -> URL? {
         if let url = URL(string: self) {
