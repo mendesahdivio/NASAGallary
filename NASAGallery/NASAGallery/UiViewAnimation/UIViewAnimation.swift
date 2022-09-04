@@ -27,4 +27,26 @@ extension UIView {
            completion(true)
        }
      }
+    
+    
+    func slideInFromLeft(duration: TimeInterval = 0.1, completionDelegate: AnyObject? = nil) {
+        let slideInFromLeftTransition = CATransition()
+        slideInFromLeftTransition.type = CATransitionType.push
+        slideInFromLeftTransition.subtype = CATransitionSubtype.fromRight
+        slideInFromLeftTransition.duration = duration
+        slideInFromLeftTransition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        slideInFromLeftTransition.fillMode = CAMediaTimingFillMode.removed
+        self.layer.add(slideInFromLeftTransition, forKey: "slideInFromLeftTransition")
+      }
+    
+    
+    func slideInFromRight(duration: TimeInterval = 0.1, completionDelegate: AnyObject? = nil) {
+        let slideInFromLeftTransition = CATransition()
+        slideInFromLeftTransition.type = CATransitionType.push
+        slideInFromLeftTransition.subtype = CATransitionSubtype.fromLeft
+        slideInFromLeftTransition.duration = duration
+        slideInFromLeftTransition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        slideInFromLeftTransition.fillMode = CAMediaTimingFillMode.removed
+        self.layer.add(slideInFromLeftTransition, forKey: "slideInFromRightTransition")
+      }
 }

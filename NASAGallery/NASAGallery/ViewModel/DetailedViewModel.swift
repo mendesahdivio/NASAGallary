@@ -9,14 +9,12 @@ import Foundation
 import UIKit
 
 protocol DetailedViewModelInterface {
-    func loadFullImage(completion: @escaping (UIImage?, Error?) -> Void)
-    func fetchNextImage(completion: @escaping (UIImage?, Error?) -> Void)
-    func fetchPrevious(completion: @escaping (UIImage?, Error?) -> Void)
+    func fetchNextImage(completion: @escaping (Error?) -> Void)
+    func fetchPrevious(completion: @escaping (Error?) -> Void)
+    func loadFullImage(imageView: UIImageView, completion: @escaping (Error?) -> Void) 
     func isLastImage() -> Bool
-    func getImageExplanation() -> String
     func getImageTitle() -> String
-    func getDate() -> String
-    func getCopyRight() -> String
+    func makeTextForTextView(title: String) -> String
     var NasaGalaryData: [GalleryModel] {get set}
     var indexOfObject: Int {get set}
 }
@@ -27,11 +25,20 @@ protocol DetailedViewModelInterface {
 class DetailedViewModel: DetailedViewModelInterface {
     
     private var index: Int = 0
-    private var urlImageLoader: UrlImageDataLoader?
+    private var nukeImageLoader: NukeImageLoader?
     private var nasaGalleryData = [GalleryModel]()
-    private var cachedData = [Int: UIImage]()
+    fileprivate var imageView: UIImageView?
     private var cache: NSCache<NSNumber, UIImage> = NSCache<NSNumber, UIImage>()
-    private var metaData: MetaDataModel?
+   
+    //Used for UnitTest Only has dependency
+    var testImageView: UIImageView {
+        get {
+            return imageView ?? UIImageView()
+        }
+        set(val) {
+            self.imageView = val
+        }
+    }
     
     
     var NasaGalaryData: [GalleryModel] {
@@ -54,54 +61,25 @@ class DetailedViewModel: DetailedViewModelInterface {
     
     
     init() {
-        urlImageLoader = UrlImageDataLoader()
+        nukeImageLoader = NukeImageLoader()
         cache.totalCostLimit = 50_000_000
     }
     
-   
-    //MARK: returns full Sized Image on selection of the image
-    func loadFullImage( completion: @escaping (UIImage?, Error?) -> Void) {
-        if isIndexWithinBounds() {
-            let indexNumer = NSNumber(value: index)
-            if let cachedImage = cache.object(forKey: indexNumer) {
-                completion(cachedImage, nil)
-            } else {
-                let urlForThumbnail = nasaGalleryData[index].hdurl?.returnURl()
-                urlImageLoader?.startLoadingImage(url: urlForThumbnail, taskType: .FullImage) {[weak self] data in
-                    guard let data = data as? Data else {
-                        //write code to handel other issues
-                        if let error = data as? Error {
-                            completion(nil, error)
-                        }
-                        return
-                    }
-                    guard let image = UIImage(data: data) else{
-                        completion(nil, nil)
-                        return
-                    }
-                    self?.cache.setObject(image, forKey: indexNumer)
-                    completion(image, nil)
-                }
-            }
-        }
-    }
-    
-    
-    func fetchNextImage(completion: @escaping (UIImage?, Error?) -> Void) {
+    func fetchNextImage(completion: @escaping (Error?) -> Void) {
         let count = nasaGalleryData.count
         let currentIndex = index
         if currentIndex + 1 < count {
             index = currentIndex + 1
-            self.loadFullImage(completion: completion)
+            self.loadFullImage(imageView: self.imageView!, completion: completion)
         }
     }
     
     
-    func fetchPrevious(completion: @escaping (UIImage?, Error?) -> Void) {
+    func fetchPrevious(completion: @escaping (Error?) -> Void) {
         let currentIndex = index
         if currentIndex - 1 >= 0 {
             index = currentIndex - 1
-            self.loadFullImage(completion: completion)
+            self.loadFullImage(imageView: self.imageView!, completion: completion)
         }
     }
     
@@ -122,15 +100,6 @@ class DetailedViewModel: DetailedViewModelInterface {
         
         return ""
     }
-    
-    func getMetaData() -> MetaDataModel? {
-        var metaData: MetaDataModel?
-        if isIndexWithinBounds() {
-            metaData = MetaDataModel(copyRight: nasaGalleryData[index].copyright ?? "", date: nasaGalleryData[index].date ?? "", explanation: nasaGalleryData[index].explanation ?? "", media_type: nasaGalleryData[index].media_type ?? "", title: nasaGalleryData[index].title ?? "")
-        }
-        return metaData
-    }
-    
     
     func getImageTitle() -> String {
         if index < nasaGalleryData.count {
@@ -158,10 +127,64 @@ class DetailedViewModel: DetailedViewModelInterface {
     }
     
     
-   fileprivate func isIndexWithinBounds() -> Bool {
+    func getHdUrl() -> String {
+        if isIndexWithinBounds() {
+            return nasaGalleryData[index].hdurl ?? ""
+        }
+        return ""
+    }
+    
+    func getUrl() -> String {
+        if isIndexWithinBounds() {
+            return nasaGalleryData[index].url ?? ""
+        }
+        return ""
+    }
+    
+    
+    
+   func isIndexWithinBounds() -> Bool {
         if index < nasaGalleryData.count {
             return true
         }
         return false
     }
+    
 }
+
+//Using Nuke
+extension DetailedViewModel {
+    
+    func loadFullImage(imageView: UIImageView, completion: @escaping (Error?) -> Void) {
+        self.imageView = imageView
+        if isIndexWithinBounds() {
+            nukeImageLoader?.stopPreviousRequesIfViewChanged()
+            let indexNumer = NSNumber(value: index)
+            if let cachedImage = cache.object(forKey: indexNumer) {
+                imageView.image = cachedImage
+            } else {
+                imageView.image = nukeImageLoader?.makeGif()
+                let urlForThumbnail = nasaGalleryData[index].hdurl?.returnURl()
+                nukeImageLoader?.loadFullImage(imageView: imageView, url: urlForThumbnail!) {[weak self] error, image  in
+                    if let image = image {
+                        self?.cache.setObject(image, forKey: indexNumer)
+                    }
+                    completion(error)
+                }
+            }
+            
+        }
+    }
+    
+}
+
+
+
+extension DetailedViewModel {
+    func makeTextForTextView(title:String = "") -> String {
+       
+        let text:String = "\(title) \(getImageTitle())\n\nCOPY RIGHT:  \(getCopyRight())\n\nURL:  \(getHdUrl())\n\nHDURL:  \(getHdUrl())\n\nDATE: \(getDate())\n\nINFO: \(getImageExplanation())"
+        return text
+    }
+}
+

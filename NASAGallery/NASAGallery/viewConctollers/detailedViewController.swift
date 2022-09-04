@@ -8,36 +8,51 @@
 import Foundation
 import UIKit
 
+
+
+
+
 enum ConstantMessages: String {
     case nilImageButNoError = "Please try again in some time"
-    case withError = "Please try again in some time.. we have encounterde : "
+    case withError = "Please try again in some time.."
 }
 
-class DetailedViewController: UIViewController, UIScrollViewDelegate {
+class DetailedViewController: UIViewController {
     
+    //Detailed MetaData of image
+    @IBOutlet weak var textViewHolderView: UIView!
+    @IBOutlet weak var changeTextViewHolderBtn: UIButton!
+    @IBOutlet weak var metaDataTextField: UITextView!
+    @IBOutlet weak var textViewHolderHeigthConst: NSLayoutConstraint!
+    
+    
+    
+    
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var fullScreenImage: UIImageView!
-    @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    private var imageChangeObservation: NSKeyValueObservation?
     private var errorTask: DispatchWorkItem?
+    private var didAlreadyClicktabBar: Bool = false
+    private var isShowingMetaDeta: Bool = false
+    
     
     
     
     //Model Interface variable
     private var detailedViewModel: DetailedViewModelInterface?
-   
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.showLoading(visbility: true)
         self.loadSelectedImage()
-        self.setExplanation()
-        self.addObserverForImageView()
         self.addGesturesForView()
+        self.addGestureForDoubleClick()
+        self.setMinAndMaxZoomScale()
+        self.setTextViewText()
+       
     }
     
-    deinit {
-        imageChangeObservation = nil
-    }
+    
 }
 
 
@@ -60,17 +75,10 @@ extension DetailedViewController {
 //MARK: - setting data to DetailedViewController
 extension DetailedViewController {
     private func setImageOnMainThread(image:UIImage) {
-         DispatchQueue.main.async {[weak self] in
-             self?.fullScreenImage.image = image
-         }
-     }
-     
-     private func setExplanation() {
-         DispatchQueue.main.async {[weak self] in
-             self?.textView.text = self?.detailedViewModel?.getImageExplanation()
-         }
-        
-     }
+        DispatchQueue.main.async {[weak self] in
+            self?.fullScreenImage.image = image
+        }
+    }
 }
 
 
@@ -79,39 +87,47 @@ extension DetailedViewController {
 //MARK: - Logic related to next, previous and current image loading
 extension DetailedViewController {
     
-   private func loadSelectedImage() {
-        self.detailedViewModel?.loadFullImage {[weak self] image, error in
-            self?.dataCheker(image: image, error: error)
+    private func loadSelectedImage() {
+        self.detailedViewModel?.loadFullImage(imageView: self.fullScreenImage) {[weak self] error in
+            self?.dataChecker(error: error)
         }
     }
     
     
-   private func fetchNext() {
-        self.checkIfLastImageForLayout()
-       
-        self.detailedViewModel?.fetchNextImage{[weak self] image, error in
-            self?.dataCheker(image: image, error: error)
+    private func fetchNext() {
+        self.detailedViewModel?.fetchNextImage{[weak self] error in
+            self?.dataChecker(error: error)
         }
+        setTextViewText()
     }
     
     
-   private func fetchPrevious() {
-        self.checkIfLastImageForLayout()
-       
-        self.detailedViewModel?.fetchPrevious{[weak self] image, error in
-            self?.dataCheker(image: image, error: error)
+    private func fetchPrevious() {
+        self.detailedViewModel?.fetchPrevious{[weak self]  error in
+            self?.dataChecker(error: error)
         }
+        setTextViewText()
     }
     
     
-    func checkIfLastImageForLayout() {
+    func checkIfLastImageForLayout() -> Bool {
         if self.detailedViewModel!.isLastImage() != true {
+            
             self.showLoading(visbility: true)
-            DispatchQueue.main.async {[weak self] in
-                self?.fullScreenImage.image = nil
-            }
+            return false
         }
-        self.setExplanation()
+        
+        return true
+    }
+    
+    
+    func dataChecker(error: Error?) {
+        errorTask?.cancel()
+        if error != nil {
+            showErrorAlert(with: true, errorDetails: error!.localizedDescription)
+        } else {
+            showLoading(visbility: false)
+        }
     }
     
     
@@ -134,7 +150,7 @@ extension DetailedViewController {
         
         if error {
             errorTask = DispatchWorkItem {
-                self.presentAlert(ConstantMessages.withError.rawValue + "\(errorDetails)") {[weak self] action in
+                self.presentAlert(ConstantMessages.withError.rawValue) {[weak self] action in
                     self?.loadSelectedImage()
                 }
             }
@@ -150,9 +166,6 @@ extension DetailedViewController {
         DispatchQueue.global(qos: .background).async(execute: errorTask!)
         
     }
-    
-    
-   
 }
 
 
@@ -163,15 +176,48 @@ extension DetailedViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
+    
+    @IBAction func ShowMetaData(_ button: UIButton) {
+        DispatchQueue.main.async {[weak self] in
+            let isShowing = self?.isShowingMetaDeta
+            self?.changeSizeOfView(revertOriginal: isShowing!)
+            self?.changeTextOfButton(changeTitle: isShowing!)
+        }
+        
+    }
 }
 
 
+//MARK: - scrollview delegates and scales
+extension DetailedViewController:UIScrollViewDelegate {
+    func setMinAndMaxZoomScale() {
+        let minScale = scrollView.frame.size.width / fullScreenImage.frame.size.width;
+        scrollView.minimumZoomScale = minScale;
+        scrollView.maximumZoomScale = 2.0;
+        scrollView.contentSize = fullScreenImage.frame.size;
+        scrollView.delegate = self;
+    }
+    
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return fullScreenImage
+    }
+}
+
+
+//MARK: -  all gesture related code for scroll view and the swiping
 extension DetailedViewController {
-    func addObserverForImageView() {
-        imageChangeObservation = fullScreenImage.observe(\.image, options: [.new]) { [weak self] (object, change) in
-            if object.image != nil {
-                self?.showLoading(visbility: false)
-            }
+    func addGestureForDoubleClick() {
+        let tap =  UITapGestureRecognizer(target: self, action: #selector(doubleTap))
+        tap.numberOfTapsRequired = 2
+        self.view.addGestureRecognizer(tap)
+    }
+    
+    
+    @objc func doubleTap() {
+        if scrollView.zoomScale > scrollView.minimumZoomScale {
+            scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
+        } else {
+            scrollView.setZoomScale(scrollView.maximumZoomScale, animated: true)
         }
     }
     
@@ -181,7 +227,7 @@ extension DetailedViewController {
         
         leftSwipe.direction = .left
         rightSwipe.direction = .right
-
+        
         self.view.addGestureRecognizer(leftSwipe)
         self.view.addGestureRecognizer(rightSwipe)
     }
@@ -211,10 +257,63 @@ extension DetailedViewController {
     }
     
     func animateLeftSwipe() {
-        self.fullScreenImage.fadeIn()
+        if  !self.checkIfLastImageForLayout() {
+            self.fullScreenImage.slideInFromLeft()
+        }
+        
     }
     
     func animateRightSwipe() {
-        self.fullScreenImage.fadeIn()
+        if !self.checkIfLastImageForLayout() {
+            self.fullScreenImage.slideInFromRight()
+        }
+        
     }
 }
+
+
+
+
+//MARK: - UIConfiguration for metaData related UI
+extension DetailedViewController {
+    
+    func setTextViewText() {
+        metaDataTextField.text = detailedViewModel?.makeTextForTextView(title: "Title: ")
+        self.changeTextViewHolderBtn.isHidden = false
+    }
+    
+    
+    func changeTextOfButton(changeTitle isMore: Bool) {
+        //value of the boolean doesnt get updated fast enoguh so written opposite logic here
+        if isMore {
+            changeTextViewHolderBtn.isSelected = false
+            changeTextViewHolderBtn.setTitle("MORE", for: .normal)
+            
+            
+        } else {
+            changeTextViewHolderBtn.isSelected = true
+            changeTextViewHolderBtn.setTitle("LESS", for: .selected)
+        }
+        
+        
+    }
+    
+    
+    func changeSizeOfView(revertOriginal sizeCheck: Bool) {
+        if sizeCheck {
+            textViewHolderHeigthConst.constant = 50
+            textViewHolderView.needsUpdateConstraints()
+            textViewHolderView.layoutIfNeeded()
+            metaDataTextField.layoutIfNeeded()
+            isShowingMetaDeta = false
+        } else {
+            textViewHolderHeigthConst.constant = 200
+            textViewHolderView.needsUpdateConstraints()
+            textViewHolderView.layoutIfNeeded()
+            metaDataTextField.layoutIfNeeded()
+            isShowingMetaDeta = true
+        }
+    }
+}
+
+

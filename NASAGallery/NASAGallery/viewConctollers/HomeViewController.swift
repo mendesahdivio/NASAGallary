@@ -6,7 +6,6 @@
 //
 
 import UIKit
-
 typealias collectionViewSource = UICollectionViewDataSource & UICollectionViewDelegate & UICollectionViewDelegateFlowLayout
 
 class HomeViewController: UIViewController {
@@ -34,14 +33,15 @@ extension HomeViewController: collectionViewSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collectionViewCellName, for: indexPath) as! GalleryCelll
         cell.addShadow()
-         modelDelegate?.getThumbnails(fromCollection: indexPath) { image in
-             DispatchQueue.main.async {
-                 if cell.imageView.image == nil || cell.imageView.image != image {
-                     cell.imageView.image = image
-                 }
-             }
-        }
+       
+        modelDelegate?.getThumbanilUsingNuke(formCollection: indexPath, ImageView: cell.imageView, cellSize: generateCGFSize())
         return cell
+    }
+    
+    func generateCGFSize() -> CGFloat{
+        let size = CGSize(width: 128.0, height: 128.0)
+        let CGF = size.height * size.width
+        return CGF
     }
     
     
@@ -96,3 +96,10 @@ extension HomeViewController {
 }
 
 
+extension CGFloat {
+    func generateCGFSize() -> CGFloat{
+        let size = CGSize(width: 128.0, height: 128.0)
+        let CGF = size.height * size.width
+        return CGF
+    }
+}

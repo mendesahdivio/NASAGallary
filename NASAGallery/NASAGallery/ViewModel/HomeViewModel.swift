@@ -8,8 +8,9 @@
 import Foundation
 import UIKit
 
+
 protocol HomeViewModelInterface {
-    func getThumbnails(fromCollection indexPath: IndexPath, completion: @escaping (UIImage) -> Void)
+    func getThumbanilUsingNuke(formCollection indexPath: IndexPath, ImageView: UIImageView?, cellSize: CGFloat)
     func returnCountOfImages() -> Int
     var getModelData: [GalleryModel] {get}
 }
@@ -18,12 +19,12 @@ protocol HomeViewModelInterface {
 
 class HomeViewModel: HomeViewModelInterface {
     var nasaGalleryData = [GalleryModel]()
-    var urlImageLoader: UrlImageDataLoader?
+    var nukeImageLoader: NukeImageLoader?
     var cache = NSCache<NSNumber, UIImage>()
     
     init() {
         setModel()
-        urlImageLoader = UrlImageDataLoader()
+        nukeImageLoader = NukeImageLoader()
     }
     
     var getModelData: [GalleryModel] {
@@ -45,26 +46,20 @@ class HomeViewModel: HomeViewModelInterface {
     func returnCountOfImages() -> Int {
         return nasaGalleryData.count
     }
-    
-    //MARK: returns thumbanils when requested in uicollectionview
-    func getThumbnails(fromCollection indexPath: IndexPath, completion: @escaping (UIImage) -> Void) {
+        
+    func getThumbanilUsingNuke(formCollection indexPath: IndexPath, ImageView cellImageView: UIImageView?, cellSize: CGFloat)   {
         let index = indexPath.item
         if index < nasaGalleryData.count {
             let numberIndex = NSNumber(value: index)
             if let cachedImage = cache.object(forKey: numberIndex) {
-                completion(cachedImage)
+                cellImageView!.image = cachedImage
             } else {
                 let urlForThumbnail = nasaGalleryData[index].url?.returnURl()
-                urlImageLoader?.startLoadingImage(url: urlForThumbnail) {[weak self] data in
-                    guard let data = data as? Data else {
-                        //write code to handel other issues
-                        return
-                    }
-                    let image = data.makeThumbnail()
-                    self?.cache.setObject(image, forKey: numberIndex)
-                    completion(image)
+                DispatchQueue.main.async {[weak self] in
+                    self?.nukeImageLoader?.loadImageCell(url: urlForThumbnail!, imageView: cellImageView!, cellSize: cellSize)
                 }
             }
         }
     }
+        
 }
