@@ -1,5 +1,5 @@
 # NASAGallary
-Project iPictures
+Project NASAGallery
 
 Aim: To create a Simple Nasa gallery application by using Nuke library.
 
